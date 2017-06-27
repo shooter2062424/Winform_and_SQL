@@ -16,6 +16,7 @@ namespace SQL_Client
         //data member
         private string account;
         private string password;
+        private SQL_Util sql;
 
 
         //constructor
@@ -42,10 +43,136 @@ namespace SQL_Client
 
             InitializeComponent();
 
+            //show account and password
             this.textBox1.Text = account;
             this.textBox2.Text = password;
+
+            //initial sql
+            sql = new SQL_Util();
+            //sql.IP = "36.234.144.134";
+            //sql.userAccount = "shooter";
+            //sql.userPwd = "11111111";
+            //sql.database = "sys";
+            sql.IP = "127.0.0.1";
+            sql.userAccount = "swallow";
+            sql.userPwd = "collin24";
+            sql.database = "testdatabase";
+            sql.table = "main_table";
+            sql.OpenConnection();
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void GetNext_Click(object sender, EventArgs e)
+        {
+            if (sql.checkConnection())
+            {
+                if (this.id.Text != string.Empty)
+                {
+                    int val = Convert.ToInt32(this.id.Text);
+                    SQL_Structure ss = sql.Read(val);
+                    this.id.Text = ss.id.ToString();
+                    this.modelID.Text = ss.modelID;
+                    this.gender.Text = ss.gender;
+                    this.hasImg.Text = ss.blobImg == null ? "None" : "Has";
+                    setDataGrid(ss);
+                    if (ss.blobImg != null)
+                    {
+                        setImgBox(sql.BlobToImage(ss.blobImg));
+                    }
+                    else
+                    {
+                        clearImgBox();
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Failed to connect to MYSQL server!");
+            }
+        }
+
+        private void setDataGrid(SQL_Structure ss)
+        {
+            dataGrid.ColumnCount = 9;
+            dataGrid.Columns[0].Name = "has stone";
+            dataGrid.Columns[1].Name = "is ring";
+            dataGrid.Columns[2].Name = "is couple";
+            dataGrid.Columns[3].Name = "is pendant";
+            dataGrid.Columns[4].Name = "is wristband";
+            dataGrid.Columns[5].Name = "is bracelet";
+            dataGrid.Columns[6].Name = "is earring";
+            dataGrid.Columns[7].Name = "is necklace";
+            dataGrid.Columns[8].Name = "is other";
+            string[] row = new string[dataGrid.ColumnCount];
+            row[0] = OorX(ss.has_stone);
+            row[1] = OorX(ss.is_ring);
+            row[2] = OorX(ss.is_couple);
+            row[3] = OorX(ss.is_pendant);
+            row[4] = OorX(ss.is_wristband);
+            row[5] = OorX(ss.is_bracelet);
+            row[6] = OorX(ss.is_earring);
+            row[7] = OorX(ss.is_necklace);
+            row[8] = OorX(ss.is_other);
+            dataGrid.Rows.Clear();
+            dataGrid.Rows.Add(row);
+        }
+
+        private string OorX(bool b)
+        {
+            Console.Write(b.ToString());
+            return b ? "O" : "X";
+        }
+
+        private void LoadImg_Click(object sender, EventArgs e)
+        {
+            Image img = sql.LoadImage();
+            imgBox.Image = img;
+        }
+
+        private void SendImg2Sql_Click(object sender, EventArgs e)
+        {
+            Image img = imgBox.Image;
+            int val = Convert.ToInt32(this.id.Text);
+            sql.updateImg(img, val);
+        }
+
+        private void setImgBox(Image img)
+        {
+            if(imgBox.Image != null)
+            {
+                //release memory usage
+                imgBox.Image.Dispose();
+            }
+            imgBox.Image = img;
+        }
+
+        private void clearImgBox()
+        {
+            if (imgBox.Image != null)
+            {
+                //release memory usage
+                imgBox.Image.Dispose();
+                imgBox.Image = null;
+            }
+        }
+
+
+        //old testing
+        /*
         private void FetchData_Click(object sender, EventArgs e)
         {
             //get data from sql database(db)
@@ -118,5 +245,6 @@ namespace SQL_Client
                 conn.Close();
             }
         }
+        */
     }
 }
