@@ -77,7 +77,6 @@ namespace SQL_Client
                 conn = new MySqlConnection(connStr);
                 command = conn.CreateCommand();
                 connectionSuccess = true;
-                
             }
             return connectionSuccess;
         }
@@ -97,7 +96,7 @@ namespace SQL_Client
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand();
             byte[] arr = ImageToBlob(img);
-            cmd.CommandText = "update " + table + " set blobImg=" + "@img" + " where id=" + id.ToString();
+            cmd.CommandText = "update " + table + " set design_img=" + "@img" + " where id=" + id.ToString();
             cmd.Parameters.Add("@img", MySqlDbType.MediumBlob);
             cmd.Parameters["@img"].Value = arr;
 
@@ -114,12 +113,13 @@ namespace SQL_Client
         {
             SQL_Structure sql_struct = new SQL_Structure();
             conn.Open();
+            /*
             if(conn.State != ConnectionState.Open)
             {
                 conn.Close();
                 return sql_struct;
             }
-
+            */
             //add query
             command.CommandText = "select * from " + table + " where id = '" + id.ToString() + "'";
             adapter = new MySqlDataAdapter(command);
@@ -131,7 +131,6 @@ namespace SQL_Client
             sql_struct.gender = t.Rows[0][2].ToString();
             sql_struct.has_stone = (bool)t.Rows[0][3];
             sql_struct.is_ring = (bool)t.Rows[0][4];
-            Console.WriteLine("Bool:" + sql_struct.is_ring.ToString() + "  origin:" + t.Rows[0][4].ToString());
             sql_struct.is_couple = (bool)t.Rows[0][5];
             sql_struct.is_pendant = (bool)t.Rows[0][6];
             sql_struct.is_wristband = (bool)t.Rows[0][7];

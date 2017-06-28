@@ -49,14 +49,16 @@ namespace SQL_Client
 
             //initial sql
             sql = new SQL_Util();
-            //sql.IP = "36.234.144.134";
-            //sql.userAccount = "shooter";
-            //sql.userPwd = "11111111";
-            //sql.database = "sys";
+            sql.IP = "36.234.144.134";
+            sql.userAccount = "shooter";
+            sql.userPwd = "11111111";
+            sql.database = "sys";
+            /*
             sql.IP = "127.0.0.1";
             sql.userAccount = "swallow";
             sql.userPwd = "collin24";
             sql.database = "testdatabase";
+            */
             sql.table = "main_table";
             sql.OpenConnection();
         }
@@ -133,7 +135,6 @@ namespace SQL_Client
 
         private string OorX(bool b)
         {
-            Console.Write(b.ToString());
             return b ? "O" : "X";
         }
 
